@@ -1,0 +1,31 @@
+<h1>Listing users</h1>
+
+<table style="width: 100%">
+  <tr class="header">
+    <th>Username</th>
+    <th>Email</th>
+    <th>Full name</th>
+    <th>Password</th>
+    <th>Current city</th>
+    <th>Confirmed password</th>
+    <th></th>
+  </tr>
+
+<% @users.each do |user| %>
+  <tr class="<%= cycle('odd_line', 'even_line')%>">
+    <td><%= user.username %></td>
+    <td><%= user.email %></td>
+    <td><%= user.full_name %></td>
+    <td><%= user.current_city %></td>
+    <td>
+      <%= link_to 'Show', user.username %><br/>
+      <%= link_to 'Edit', edit_user_path(user) %><br/>
+      <%= link_to 'Destroy', user, :method => :delete, :data => { :confirm => 'Are you sure?' } %>
+    </td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New User', new_user_path %>
