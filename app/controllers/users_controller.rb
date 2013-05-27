@@ -11,11 +11,12 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.json
   def index
-    unless loggedin?
+    unless session[:loggedin]
      @user = User.new
      render :action => 'new'
     else
-      render :action => 'show'
+      @user = session[:loggedin]
+      redirect_to "/users/#{@user.username}"
     end
   end
 
@@ -24,14 +25,15 @@ class UsersController < ApplicationController
   def show
     if params[:user]
       @user = User.find_by_username(params[:user][:username])
-      @current_user = @user
-      @logged_in = @user && @user.password == params[:user][:password]
       unless loggedin?
- 	puts "logged in #{@logged_in}"
+	session[:loggedin] = nil
+        session[:currentuser] = nil
 	@user = User.new
         render :action => 'new'
         return
       else
+	session[:loggedin] = @user
+        session[:currentuser] = @user
 	redirect_to "/users/#{@user.username}"
 	return
       end
@@ -39,6 +41,7 @@ class UsersController < ApplicationController
       username = params[:id];
       unless username == 'show'
         @user = User.find_by_username(params[:id])
+        session[:currentuser] = @user
       end
     end
     if @user
